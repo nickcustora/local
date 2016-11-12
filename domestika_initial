@@ -1,4 +1,4 @@
-SELECT `users`.`id`, `users`.`id` AS customer_id, `users`.`created_at` AS created_date, 
+SELECT `users`.`id` AS customer_id, `users`.`created_at` AS created_date, 
 `users`.`email` AS email_address, `geo_countries`.`code` AS country,
 `users`.`origin_type` AS landing_page, `users`.`followers_count`, `users`.`following_count`,
 (`users`.`public_projects_count` > 0) AS portfolio, GROUP_CONCAT(DISTINCT `categories`.`name_en`) AS category_names,

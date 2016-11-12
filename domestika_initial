@@ -1,13 +1,15 @@
-SELECT `users`.`id` AS customer_id, `users`.`created_at` AS created_date, 
-`users`.`email` AS email_address, `users`.`country_code` AS country, 
-`users`.`origin_type` AS landing_page, `users`.`followers_count`, `users`.`following_count`, 
-(`users`.`public_projects_count` > 0) AS portfolio, GROUP_CONCAT(DISTINCT `categories`.`name_en`) AS category_names, 
-`ga_external_origins`.`source` AS external_source, `ga_external_origins`.`medium` AS external_medium, 
-`ga_external_origins`.`campaign` AS external_campaign, `ga_external_origins`.`ad_group` AS external_ad_group, 
-`ga_external_origins`.`device_category` AS external_device_category, `ga_external_origins`.`country` AS external_country 
-FROM `users` 
-  LEFT JOIN `category_relationships` ON `category_relationships`.`target_id` = `users`.`id` AND `category_relationships`.`target_type` = 'User' 
-  LEFT JOIN `categories` ON `categories`.`id` = `category_relationships`.`category_id`
-  LEFT JOIN `ga_external_origins` ON `ga_external_origins`.`originable_id` = `users`.`id` AND `ga_external_origins`.`originable_type` = 'User' 
-  WHERE `users`.`activated` = 1 
-  GROUP BY customer_id
+SELECT `users`.`id`, `users`.`id` AS customer_id, `users`.`created_at` AS created_date,
+      `users`.`email` AS email_address, `geo_countries`.`code` AS country,
+      `users`.`origin_type` AS landing_page, `users`.`followers_count`, `users`.`following_count`,
+      (`users`.`public_projects_count` > 0) AS portfolio, GROUP_CONCAT(DISTINCT `categories`.`name_en`) AS category_names,
+      `ga_external_origins`.`source` AS external_source, `ga_external_origins`.`medium` AS external_medium,
+      `ga_external_origins`.`campaign` AS external_campaign, `ga_external_origins`.`ad_group` AS external_ad_group,
+      `ga_external_origins`.`device_category` AS external_device_category, `ga_external_origins`.`country` AS external_country
+      FROM `users`
+      LEFT JOIN `category_relationships` ON `category_relationships`.`target_id` = `users`.`id` AND `category_relationships`.`target_type` = 'User'
+      LEFT JOIN `categories` ON `categories`.`id` = `category_relationships`.`category_id`
+      LEFT JOIN `ga_external_origins` ON `ga_external_origins`.`originable_id` = `users`.`id` AND `ga_external_origins`.`originable_type` = 'User'
+      LEFT JOIN `geolocations` ON `geolocations`.`target_id` = `users`.`id` AND `geolocations`.`context` = 'home' AND `geolocations`.`target_type` = 'User'
+      LEFT JOIN `geo_countries` ON `geo_countries`.`id` = `geolocations`.`country_id`
+      WHERE `users`.`activated` = 1
+      GROUP BY customer_id
